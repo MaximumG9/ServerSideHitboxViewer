@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.maximumg9.serversidehitboxviewer.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "CustomPayloadC2SPacketMixin",
+    "CustomPayloadS2CPacketMixin",
+    "EntityMixin",
+    "ServerPlayNetworkHandlerMixin"
+  ],
+  "client": [
+    "ClientPlayNetworkHandlerMixin",
+    "DebugRendererMixin",
+    "GameOptionsMixin",
+    "MinecraftClientMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
