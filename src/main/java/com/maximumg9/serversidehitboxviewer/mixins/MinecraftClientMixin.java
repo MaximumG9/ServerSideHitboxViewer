@@ -5,6 +5,7 @@ import com.maximumg9.serversidehitboxviewer.ServerSideHitboxViewerClient;
 import com.maximumg9.serversidehitboxviewer.protocol.ToggleTrackEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.debug.DebugRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
@@ -24,18 +25,24 @@ public abstract class MinecraftClientMixin {
 
     @Shadow @Final public DebugRenderer debugRenderer;
 
+    @Shadow @Nullable public ClientPlayerEntity player;
+
     @Inject(method="tick",at=@At("RETURN"))
     private void onEndTick(CallbackInfo ci) {
         if(ServerSideHitboxViewerClient.trackServerSideBinding.wasPressed()) {
-            if(this.targetedEntity != null) {
+            Entity target = this.targetedEntity;
+            if(target == null) {
+                target = this.player;
+            }
+            if(target != null) {
                 ClientPlayNetworkHandler handler = this.getNetworkHandler();
                 if(handler != null) {
                     handler.sendPacket(new CustomPayloadC2SPacket(
-                            new ToggleTrackEntity(this.targetedEntity,
+                            new ToggleTrackEntity(target,
                                     !(
                                             ((DebugRendererDuck)this.debugRenderer)
                                             .sshibotviewer$getServerSideHitboxRenderer()
-                                                    .hasBox(this.targetedEntity.getId())
+                                                    .hasBox(target.getId())
                                     )
                             )
 
